@@ -45,15 +45,8 @@ function request(key) {
 // ***************************
 function print(response) {
     if (response.length != 0) {
-        response.sort(function(b, a) {
-            if( a.title === b.title ) {
-                return 0;
-            } else if ( a.title < b.title ) {
-                return 1;
-            } else {
-                return -1;
-            }
-        });
+        // sortFloatNumb(response, 'popularity');
+        // response.sort(sortTitleAlph);
         $('.result').append(printer_result(response));
     } else {
         var cfg_noresult = {
@@ -71,3 +64,20 @@ function error() {
     $('.result').append(printer_noresult(cfg_error));
 }
 // ***************************
+// CUSTOM function for .title
+// ***************************
+function sortTitleAlph(b, a) {
+    if(a.title === b.title) {
+        return 0;
+    } else if (a.title < b.title) {
+        return 1;
+    } else {
+        return -1;
+    }
+}
+// ***************************
+function sortFloatNumb(obj, objKeyString) {
+    obj.sort(function(a, b) {
+        return parseFloat(a.objKeyString) - parseFloat(b.objKeyString);
+    });
+}
