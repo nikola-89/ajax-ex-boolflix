@@ -46,7 +46,13 @@ function request(key) {
 function print(response) {
     if (response.length != 0) {
         response.sort(function(b, a) {
-            return parseFloat(a.vote_average) - parseFloat(b.vote_average);
+            if( a.title === b.title ) {
+                return 0;
+            } else if ( a.title < b.title ) {
+                return 1;
+            } else {
+                return -1;
+            }
         });
         $('.result').append(printer_result(response));
     } else {
