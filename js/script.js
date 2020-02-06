@@ -45,6 +45,9 @@ function request(key) {
 // ***************************
 function print(response) {
     if (response.length != 0) {
+        response.sort(function(b, a) {
+            return parseFloat(a.vote_average) - parseFloat(b.vote_average);
+        });
         $('.result').append(printer_result(response));
     } else {
         var cfg_noresult = {
@@ -57,7 +60,7 @@ function print(response) {
 function error() {
     var printer_error = Handlebars.compile($('#result').html());
     var cfg_error = {
-        str : 'La ricerca non ha prodotto risultati.'
+        str : 'Impossibile elaborare la richiesta.'
     }
     $('.result').append(printer_noresult(cfg_error));
 }
