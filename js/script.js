@@ -39,10 +39,10 @@ function request(key) {
 }
 // ***************************
 function print(response) {
-$('.result').append(builder(response));
+    $('.result').append(builder(response));
 }
 // ***************************
 function error() {
-    $('.result').append(builder({title : 'Impossibile processare la richiesta.'}));
+    $('.result').append(builder({title : 'Impossibile elaborare la richiesta.'}));
 }
 // ***************************
