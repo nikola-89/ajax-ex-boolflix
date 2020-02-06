@@ -1,12 +1,17 @@
 $(document).ready(function() {
     // ***************************
-    builder = Handlebars.compile($('#result').html());
+    printer_result = Handlebars.compile($('#result').html());
+    printer_noresult = Handlebars.compile($('#error').html());
     $('.search input').focus();
     $(document).on('click', '.search button', function() {
-        $('.result .title').remove();
-        request($('.search input').val());
-        $('.search input').val('');
-        $('.search input').focus();
+        if ($('.search input').val().trim().length != 0) {
+            $('.result .title').remove();
+            request($('.search input').val());
+            $('.search input').val('');
+            $('.search input').focus();
+        } else {
+            $('.search input').focus();
+        }
     });
 });
 // ***************************
@@ -39,10 +44,21 @@ function request(key) {
 }
 // ***************************
 function print(response) {
-    $('.result').append(builder(response));
+    if (response.length != 0) {
+        $('.result').append(printer_result(response));
+    } else {
+        var cfg_noresult = {
+            str : 'La ricerca non ha prodotto risultati.'
+        }
+        $('.result').append(printer_noresult(cfg_noresult));
+    }
 }
 // ***************************
 function error() {
-    $('.result').append(builder({title : 'Impossibile elaborare la richiesta.'}));
+    var printer_error = Handlebars.compile($('#result').html());
+    var cfg_error = {
+        str : 'La ricerca non ha prodotto risultati.'
+    }
+    $('.result').append(printer_noresult(cfg_error));
 }
 // ***************************

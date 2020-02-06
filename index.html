@@ -23,11 +23,16 @@
             {{#each this}}
             <div class="title">
                 <h2>{{title}}</h2>
-                <h4>Titolo originale: {{original_title}}</h4>
-                <h4>Lingua originale: {{original_language}}</h4>
-                <h4>Voto medio: {{vote_average}}</h4>
+                <h4>titolo originale: {{original_title}}</h4>
+                <h4>lingua originale: {{original_language}}</h4>
+                <h4>voto medio: {{vote_average}}</h4>
             </div>
             {{/each}}
+        </script>
+        <script id="error" type="text/x-handlebars-template">
+            <div class="title">
+                <h2>{{str}}</h2>
+            </div>
         </script>
         <!-- ************************ -->
         <script src="js/script.js" charset="utf-8"></script>
