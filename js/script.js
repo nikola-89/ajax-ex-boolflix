@@ -24,9 +24,9 @@ function request(key) {
             method: "GET",
             data: {
                 api_key : 'af0ae7e4040a70eef7c834e5f942b6b8',
-    	        query : key,
-            	language : 'it-IT',
-            	page : 1
+                query : key,
+                language : 'it-IT',
+                page : 1
             },
             success: function (data, status) {
                 if (status == 'success') {
