@@ -3,6 +3,7 @@ $(document).ready(function() {
     builder = Handlebars.compile($('#result').html());
     $('.search input').focus();
     $(document).on('click', '.search button', function() {
+        $('.result .title').remove();
         request($('.search input').val());
         $('.search input').val('');
         $('.search input').focus();
