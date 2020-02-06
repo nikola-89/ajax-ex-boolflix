@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="it" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="shortcut icon" href="https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico">
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" charset="utf-8"></script>
+        <script src="https://s3.amazonaws.com/builds.handlebarsjs.com/handlebars.min-v4.7.2.js" charset="utf-8"></script>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/master.css">
+        <title>BoolFlix</title>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="search">
+                <input type="text" name="search_box" placeholder="Inserisci il titolo di un film" value="">
+                <button type="button" name="btn_search-box">Cerca!</button>
+            </div>
+            <div class="result">
+            </div>
+        </div>
+        <!-- ************************ -->
+        <script id="result" type="text/x-handlebars-template">
+            {{#each this}}
+            <div class="title">
+                <h2>{{title}}</h2>
+                <h4>Titolo originale: {{original_title}}</h4>
+                <h4>Lingua originale: {{original_language}}</h4>
+                <h4>Voto medio: {{vote_average}}</h4>
+            </div>
+            {{/each}}
+        </script>
+        <!-- ************************ -->
+        <script src="js/script.js" charset="utf-8"></script>
+        <!-- ************************ -->
+    </body>
+</html>
