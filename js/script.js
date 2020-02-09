@@ -83,7 +83,7 @@ function error() {
 }
 // ***************************
 // CUSTOM function for .title
-// sortFloatNumb(response, 'popularity');
+// response.sort(sortTitleAlph);
 // ***************************
 function sortTitleAlph(b, a) {
     if(a.title === b.title) {
@@ -95,7 +95,7 @@ function sortTitleAlph(b, a) {
     }
 }
 // ***************************
-// response.sort(sortTitleAlph);
+// sortFloatNumb(response, 'popularity');
 // ***************************
 function sortFloatNumb(obj, objKeyString) {
     obj.sort(function(a, b) {
