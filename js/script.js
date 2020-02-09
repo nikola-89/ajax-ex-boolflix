@@ -14,6 +14,19 @@ $(document).ready(function() {
             focusInput();
         }
     });
+    // ***************************
+    $(document).on('keypress', $('.search input').is(':focus'), function(e) {
+            if (e.which == 13) {
+                if ($('.search input').val().trim().length != 0) {
+                    request($('.search input').val());
+                    cleanResult();
+                    focusInput();
+                } else {
+                    focusInput();
+                }
+            }
+        }
+    );
 });
 // ***************************
 // *-------*function*--------*
