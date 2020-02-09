@@ -96,6 +96,7 @@ function sortTitleAlph(b, a) {
 }
 // ***************************
 // response.sort(sortTitleAlph);
+// ***************************
 function sortFloatNumb(obj, objKeyString) {
     obj.sort(function(a, b) {
         return parseFloat(a.objKeyString) - parseFloat(b.objKeyString);
@@ -159,7 +160,8 @@ function flags(str) {
     return flagUnd;
 }
 // ******************************************************
-// ** ho specificato nell'if sia TV che Movies per escludere il resto
+// ** ho specificato nell'if sia TV che Movies per escludere
+// ** il resto (nonostante l'if gli attori non sono esclusi??)
 // ******************************************************
 function cfgResult(data) {
     var fullImg = 'https://image.tmdb.org/t/p/w500' + data.poster_path;
@@ -187,6 +189,7 @@ function cfgResult(data) {
             stars : stars(data.vote_average)
         }
     } else {
+        // return null
         return null;
     }
     return cfgResult;
