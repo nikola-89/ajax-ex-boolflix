@@ -21,12 +21,13 @@ $(document).ready(function() {
 function request(key) {
     $.ajax(
         {
-            url: "https://api.themoviedb.org/3/search/movie",
+            url: "https://api.themoviedb.org/3/search/multi",
             method: "GET",
             data: {
                 api_key : 'af0ae7e4040a70eef7c834e5f942b6b8',
                 query : key,
                 language : 'it-IT',
+                include_adult : false,
                 page : 1
             },
             success: function (data, status) {
@@ -143,12 +144,24 @@ function flags(str) {
 }
 // ***************************
 function cfgResult(data) {
-    var cfgResult = {
-        title : data.title,
-        originalTitle : data.original_title,
-        iconFlag : flags(data.original_language),
-        popularity : data.popularity,
-        stars : stars(data.vote_average)
+    if (data.media_type === 'tv') {
+        // Config SerieTV
+        var cfgResult = {
+            title : data.name,
+            originalTitle : data.original_name,
+            iconFlag : flags(data.original_language),
+            popularity : data.popularity,
+            stars : stars(data.vote_average)
+        }
+    } else {
+        // Config Film
+        var cfgResult = {
+            title : data.title,
+            originalTitle : data.original_title,
+            iconFlag : flags(data.original_language),
+            popularity : data.popularity,
+            stars : stars(data.vote_average)
+        }
     }
     return cfgResult;
 }
