@@ -160,15 +160,15 @@ function flags(str) {
     return flagUnd;
 }
 // ******************************************************
-// ** ho specificato nell'if sia TV che Movies per escludere
-// ** il resto (nonostante l'if gli attori non sono esclusi??)
+// ** ho specificato nell'if sia TV che Movies per essere
+// ** più preciso.
 // ******************************************************
 function cfgResult(data) {
     var fullImg = 'https://image.tmdb.org/t/p/w500' + data.poster_path;
     if (data.poster_path == null) {
         fullImg = 'https://i.imgur.com/WoA9AF9.png';
     }
-    if (data.media_type === 'tv') {
+    if (data.media_type == 'tv') {
         // Config SerieTV
         var cfgResult = {
             cover : fullImg,
@@ -178,7 +178,7 @@ function cfgResult(data) {
             popularity : data.popularity,
             stars : stars(data.vote_average)
         }
-    } else if (data.media_type === 'movie') {
+    } else if (data.media_type == 'movie') {
         // Config Film
         var cfgResult = {
             cover : fullImg,
