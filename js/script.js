@@ -142,7 +142,9 @@ function flags(str) {
     }
     return flagUnd;
 }
-// ***************************
+// ******************************************************
+// ** ho specificato nell'if sia TV che Movies per escludere il resto
+// ******************************************************
 function cfgResult(data) {
     if (data.media_type === 'tv') {
         // Config SerieTV
@@ -153,7 +155,7 @@ function cfgResult(data) {
             popularity : data.popularity,
             stars : stars(data.vote_average)
         }
-    } else {
+    } else if (data.media_type === 'movie') {
         // Config Film
         var cfgResult = {
             title : data.title,
