@@ -174,7 +174,7 @@ function cfgResult(data) {
             stars : stars(data.vote_average)
         }
     } else {
-        return null
+        return null;
     }
     return cfgResult;
 }
