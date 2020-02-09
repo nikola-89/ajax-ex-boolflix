@@ -130,7 +130,7 @@ function stars(number) {
 }
 // ***************************
 function flags(str) {
-    var flagUnd = 'https://i.imgur.com/1JDXdUN.png'
+    var flagUnd = 'https://i.imgur.com/1JDXdUN.png';
     var flagsIcon = {
         'en': 'https://i.imgur.com/GZt9HJg.png',
         'fr': 'https://i.imgur.com/DN4BNIF.png',
