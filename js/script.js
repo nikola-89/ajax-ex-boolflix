@@ -19,6 +19,7 @@ $(document).ready(function() {
 // *-------*function*--------*
 // ***************************
 function request(key) {
+    // https://developers.themoviedb.org/3/getting-started/introduction
     $.ajax(
         {
             url: "https://api.themoviedb.org/3/search/multi",
@@ -48,7 +49,9 @@ function request(key) {
 function print(data) {
     if (data.length != 0) {
         for (var i = 0; i < data.length; i++) {
-            $('.result').append(printerResult(cfgResult(data[i])));
+            if (cfgResult(data[i]) != null) {
+                $('.result').append(printerResult(cfgResult(data[i])));
+            }
         }
     } else {
         var cfgNoResult = {
@@ -146,9 +149,14 @@ function flags(str) {
 // ** ho specificato nell'if sia TV che Movies per escludere il resto
 // ******************************************************
 function cfgResult(data) {
+    var fullImg = 'https://image.tmdb.org/t/p/w500' + data.poster_path;
+    if (data.poster_path == null) {
+        fullImg = 'https://i.imgur.com/WoA9AF9.png';
+    }
     if (data.media_type === 'tv') {
         // Config SerieTV
         var cfgResult = {
+            cover : fullImg,
             title : data.name,
             originalTitle : data.original_name,
             iconFlag : flags(data.original_language),
@@ -158,12 +166,15 @@ function cfgResult(data) {
     } else if (data.media_type === 'movie') {
         // Config Film
         var cfgResult = {
+            cover : fullImg,
             title : data.title,
             originalTitle : data.original_title,
             iconFlag : flags(data.original_language),
             popularity : data.popularity,
             stars : stars(data.vote_average)
         }
+    } else {
+        return null
     }
     return cfgResult;
 }

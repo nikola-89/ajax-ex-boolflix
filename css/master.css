@@ -15,6 +15,11 @@
     margin-left: 10px
 }
 
+.cover img {
+    height: 250px;
+    cursor: pointer;
+}
+
 .title {
     margin: 20px 0
 }
