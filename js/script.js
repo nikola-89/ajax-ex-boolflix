@@ -7,7 +7,8 @@ $(document).ready(function() {
     // ***************************
     $(document).on('click', '.search button', function() {
         if ($('.search input').val().trim().length != 0) {
-            request($('.search input').val());
+            reqMovie($('.search input').val());
+            reqTv($('.search input').val());
             cleanResult();
             focusInput();
         } else {
@@ -18,7 +19,8 @@ $(document).ready(function() {
     $(document).on('keypress', $('.search input').is(':focus'), function(e) {
             if (e.which == 13) {
                 if ($('.search input').val().trim().length != 0) {
-                    request($('.search input').val());
+                    reqMovie($('.search input').val());
+                    reqTv($('.search input').val());
                     cleanResult();
                     focusInput();
                 } else {
@@ -31,15 +33,14 @@ $(document).ready(function() {
 // ***************************
 // *-------*function*--------*
 // ***************************
-function request(key) {
-    // https://developers.themoviedb.org/3/getting-started/introduction
+function reqMovie(value) {
     $.ajax(
         {
-            url: "https://api.themoviedb.org/3/search/multi",
+            url: "https://api.themoviedb.org/3/search/movie",
             method: "GET",
             data: {
                 api_key : 'af0ae7e4040a70eef7c834e5f942b6b8',
-                query : key,
+                query : value,
                 language : 'it-IT',
                 include_adult : false,
                 page : 1
@@ -47,7 +48,34 @@ function request(key) {
             success: function (data, status) {
                 if (status == 'success') {
                     console.log(data);
-                    print(data.results);
+                    print(data.results, 'movie');
+                } else {
+                    error();
+                }
+            },
+            error: function (data, status) {
+                error();
+            }
+        }
+    );
+}
+// ***************************
+function reqTv(value) {
+    $.ajax(
+        {
+            url: "https://api.themoviedb.org/3/search/tv",
+            method: "GET",
+            data: {
+                api_key : 'af0ae7e4040a70eef7c834e5f942b6b8',
+                query : value,
+                language : 'it-IT',
+                include_adult : false,
+                page : 1
+            },
+            success: function (data, status) {
+                if (status == 'success') {
+                    console.log(data);
+                    print(data.results, 'tv');
                 } else {
                     error();
                 }
@@ -160,15 +188,13 @@ function flags(str) {
     return flagUnd;
 }
 // ******************************************************
-// ** ho specificato nell'if sia TV che Movies per essere
-// ** più preciso.
-// ******************************************************
-function cfgResult(data) {
-    var fullImg = 'https://image.tmdb.org/t/p/w500' + data.poster_path;
+function cfgResult(data, type) {
+    var fullImg = 'https://image.tmdb.org/t/p/w185' + data.poster_path;
     if (data.poster_path == null) {
-        fullImg = 'https://i.imgur.com/WoA9AF9.png';
+        // fullImg = 'https://i.imgur.com/WoA9AF9.png';
+        fullImg = 'https://i.imgur.com/n8DkWVY.png';
     }
-    if (data.media_type == 'tv') {
+    if (type == 'tv') {
         // Config SerieTV
         var cfgResult = {
             cover : fullImg,
@@ -178,7 +204,7 @@ function cfgResult(data) {
             popularity : data.popularity,
             stars : stars(data.vote_average)
         }
-    } else if (data.media_type == 'movie') {
+    } else {
         // Config Film
         var cfgResult = {
             cover : fullImg,
@@ -188,9 +214,6 @@ function cfgResult(data) {
             popularity : data.popularity,
             stars : stars(data.vote_average)
         }
-    } else {
-        // return null
-        return null;
     }
     return cfgResult;
 }
