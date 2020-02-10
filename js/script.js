@@ -90,9 +90,7 @@ function reqTv(value) {
 function print(data) {
     if (data.length != 0) {
         for (var i = 0; i < data.length; i++) {
-            if (cfgResult(data[i]) != null) {
-                $('.result').append(printerResult(cfgResult(data[i])));
-            }
+            $('.result').append(printerResult(cfgResult(data[i])));
         }
     } else {
         var cfgNoResult = {
