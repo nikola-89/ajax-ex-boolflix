@@ -40,19 +40,17 @@ $(document).ready(function() {
         // ***************************
         if (e.type == "mouseenter") {
             if ($(this).index() == 1) {
-                $('.row .type').css({
+                $(this).siblings().eq(0).css({
                     'transform': 'translate(9px, -50px)',
                     'transition': '250ms all'
                 });
             }
             $(this).find('.info').fadeIn(400);
         } else {
-            if ($(this).index() == 1) {
-                $('.row .type').css({
-                    'transform': '',
-                    'transition': '250ms all'
-                });
-            }
+            $('.row .type').css({
+                'transform': '',
+                'transition': '250ms all'
+            });
             $(this).find('.info').fadeOut(300);;
         }
     });
@@ -179,6 +177,7 @@ function cfgResult(data, type) {
     }
     if (type == 'tv') {
         var cfgResult = {
+            type : type,
             cover : cover,
             title : data.name,
             synopsis : synopsis,
@@ -188,6 +187,7 @@ function cfgResult(data, type) {
         }
     } else {
         var cfgResult = {
+            type : type,
             cover : cover,
             title : data.title,
             synopsis : synopsis,
