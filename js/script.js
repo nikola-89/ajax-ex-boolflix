@@ -2,33 +2,26 @@ $(document).ready(function() {
     // ***************************
     // Endpoint
     // ***************************
-    var apiSlider = 'https://api.themoviedb.org/3/movie/now_playing';
+    var apiNow = 'https://api.themoviedb.org/3/movie/now_playing';
     var apiGetQuery = 'https://api.themoviedb.org/3/search/';
     var myApiKey = 'af0ae7e4040a70eef7c834e5f942b6b8';
     // ***************************
-    // Handlebars
-    // ***************************
-    var printerResult = Handlebars.compile($('#result').html());
-    var printerSlider = Handlebars.compile($('#slider_img').html());
-    var printerNoResult = Handlebars.compile($('#error').html());
-    var printerError = Handlebars.compile($('#result').html());
-    // ***************************
     // var
     // ***************************
-    var query = $('#search input');
+    var input = $('.search input');
     // ***************************
-    // apiRequests(apiSlider, myApiKey, printerSlider, 0, 'slider');
-    focusInput(query);
+    apiRequests(apiNow, myApiKey, 0, 'start');
+    focusInput(input);
     // ***************************
-    $(document).on('keypress', query.is(':focus'), function(e) {
+    $(document).on('keypress', input.is(':focus'), function(e) {
             if (e.which == 13) {
-                if (query.val().trim().length != 0) {
-                    reqMovie(query.val());
-                    reqTv(query.val());
-                    cleanResult(query);
-                    focusInput(query);
+                if (input.val().trim().length != 0) {
+                    apiRequests(apiGetQuery, myApiKey, input.val(), 'movie');
+                    apiRequests(apiGetQuery, myApiKey, input.val(), 'tv');
+                    cleanResult(input);
+                    focusInput(input);
                 } else {
-                    focusInput(query);
+                    focusInput(input);
                 }
             }
         }
@@ -46,16 +39,20 @@ $(document).ready(function() {
     $(document).on("mouseenter mouseleave", ".row .item", function(e) {
         // ***************************
         if (e.type == "mouseenter") {
-            $('.row .type').css({
-                'transform': 'translate(9px, -50px)',
-                'transition': '250ms all'
-            });
+            if ($(this).index() == 1) {
+                $('.row .type').css({
+                    'transform': 'translate(9px, -50px)',
+                    'transition': '250ms all'
+                });
+            }
             $(this).find('.info').fadeIn(400);
         } else {
-            $('.row .type').css({
-                'transform': '',
-                'transition': '250ms all'
-            });
+            if ($(this).index() == 1) {
+                $('.row .type').css({
+                    'transform': '',
+                    'transition': '250ms all'
+                });
+            }
             $(this).find('.info').fadeOut(300);;
         }
     });
@@ -63,7 +60,7 @@ $(document).ready(function() {
 // ***************************
 // *-------*function*--------*
 // ***************************
-function apiRequests(url, apiKey, handlebars, value, type) {
+function apiRequests(url, apiKey, value, type) {
     // ***************************
     $.ajax(
         {
@@ -72,7 +69,8 @@ function apiRequests(url, apiKey, handlebars, value, type) {
             data: typeCall(apiKey, value, type),
             success: function (data, status) {
                 if (status == 'success') {
-                    print(data.results, handlebars, type);
+                    console.log(data.results);
+                    print(data.results, type);
                 } else {
                     error();
                 }
@@ -84,55 +82,27 @@ function apiRequests(url, apiKey, handlebars, value, type) {
     );
 }
 // ***************************
-function print(data, handlebars, type) {
+function print(data, type) {
+    var printType = Handlebars.compile($('#type').html());
+    var printItem = Handlebars.compile($('#item').html());
+    var printError = Handlebars.compile($('#error').html());
     if (data.length != 0) {
-        if (type == 'slider') {
-            for (var i = 0; i < data.length; i++) {
-                $('.slider').append(handlebars(cfgResult(data[i])));
-            }
+        if (type == 'start') {
+            $('.wrapper').append(printType({type : 'ora al cinema'}));
         } else {
-            for (var i = 0; i < data.length; i++) {
-                $('.result').append(handlebars(cfgResult(data[i])));
-            }
+            $('.wrapper').append(printType({type : type}));
+        }
+        for (var i = 0; i < data.length; i++) {
+            $('.wrapper .row').append(printItem(cfgResult(data[i], type)));
         }
     } else {
-        $('.result').append(handlebars({
-            str : 'La ricerca non ha prodotto risultati.'
-        }));
+        $('.wrapper').append(printError({str : 'La ricerca ' + type + ' non ha prodotto risultati.'}));
     }
-}
-// ***************************
-function error() {
-    var printerError = Handlebars.compile($('#result').html());
-    var cfgError = {
-        str : 'Impossibile elaborare la richiesta.'
-    }
-    $('.result').append(printerError(cfgError));
-}
-// ***************************
-// CUSTOM function for .title
-// response.sort(sortTitleAlph);
-// ***************************
-function sortTitleAlph(b, a) {
-    if(a.title === b.title) {
-        return 0;
-    } else if (a.title < b.title) {
-        return 1;
-    } else {
-        return -1;
-    }
-}
-// ***************************
-// sortFloatNumb(response, 'popularity');
-// ***************************
-function sortFloatNumb(obj, objKeyString) {
-    obj.sort(function(a, b) {
-        return parseFloat(a.objKeyString) - parseFloat(b.objKeyString);
-    });
 }
 // ***************************
 function cleanResult(input) {
-    $('.result .title').remove();
+    $('.wrapper .row').remove();
+    $('.wrapper .error').remove();
     input.val('');
 }
 // ***************************
@@ -190,35 +160,27 @@ function flags(str) {
 // *******************************
 function cfgResult(data, type) {
     // ***************************
-    var cover = 'https://image.tmdb.org/t/p/w185' + data.poster_path;
+    var cover = 'https://image.tmdb.org/t/p/w500' + data.poster_path;
     if (data.poster_path == null) {
-        cover = 'https://i.imgur.com/n8DkWVY.png';
+        cover = 'https://i.imgur.com/PGliIqs.png';
     }
     if (type == 'tv') {
-        // Config SerieTV
         var cfgResult = {
             cover : cover,
             title : data.name,
+            synopsis : data.overview,
             originalTitle : data.original_name,
             iconFlag : flags(data.original_language),
-            popularity : data.popularity,
-            stars : stars(data.vote_average)
-        }
-    } else if (type == 'movie') {
-        // Config Film
-        var cfgResult = {
-            cover : cover,
-            title : data.title,
-            originalTitle : data.original_title,
-            iconFlag : flags(data.original_language),
-            popularity : data.popularity,
             stars : stars(data.vote_average)
         }
     } else {
-        // Config Slider
         var cfgResult = {
-            backdropPath : data.backdrop_path,
+            cover : cover,
+            title : data.title,
+            synopsis : data.overview,
             originalTitle : data.original_title,
+            iconFlag : flags(data.original_language),
+            stars : stars(data.vote_average)
         }
     }
     return cfgResult;
@@ -227,7 +189,7 @@ function cfgResult(data, type) {
 function typeUrl(url, type) {
     // ***************************
     switch (type) {
-        case 'slider':
+        case 'start':
             return url;
         case 'movie':
             return url + type;
@@ -239,7 +201,7 @@ function typeUrl(url, type) {
 function typeCall(key, query, type) {
     // ***************************
     var params;
-    if (type == 'slider') {
+    if (type == 'start') {
         query = null;
         params = {
             api_key : key,

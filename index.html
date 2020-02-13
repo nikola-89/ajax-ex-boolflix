@@ -7,7 +7,6 @@
         <script src="https://s3.amazonaws.com/builds.handlebarsjs.com/handlebars.min-v4.7.2.js" charset="utf-8"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js" integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0=" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide@latest/dist/css/glide.core.min.css">
         <link rel="stylesheet" href="css/master.css">
         <title>BoolFlix</title>
     </head>
@@ -27,72 +26,43 @@
         <!-- ************************ -->
         <main>
             <div class="wrapper">
-                <div class="row">
-                    <div class="type">
-                        <h5>Movie</h5>
-                    </div>
-                    <div class="item">
-                        <div class="cover">
-                            <img src="https://cdn1.thespacecinema.it/-/media/tsc/2020/01/74901917/1917-loc.jpg" alt="cover">
-                        </div>
-                        <div class="info">
-                            <div class="title">
-                                <h2>1917</h2>
-                            </div>
-                            <div class="original-title">
-                                <h4>TEXT</h4>
-                            </div>
-                            <div class="synopsis">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            </div>
-                            <div class="language">
-                                <img src="https://i.imgur.com/GZt9HJg.png" alt="">
-                            </div>
-                            <div class="rating">
-                                <span><i class="fas fa-star" style="color:#F9AE0E"></i></span>
-                                <span><i class="fas fa-star" style="color:#F9AE0E"></i></span>
-                                <span><i class="fas fa-star" style="color:#F9AE0E"></i></span>
-                                <span><i class="fas fa-star" style="color:#F9AE0E"></i></span>
-                                <span><i class="fas fa-star" style="color:#F9AE0E"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </main>
         <!-- ************************ -->
-        <script id="result" type="text/x-handlebars-template">
+        <script id="error" type="text/x-handlebars-template">
+            <div class="error">
+                <h2>{{str}}</h2>
+            </div>
+        </script>
+        <script id="type" type="text/x-handlebars-template">
+            <div class="row">
+                <div class="type">
+                    <h5>{{type}}</h5>
+                </div>
+            </div>
+        </script>
+        <!-- ************************ -->
+        <script id="item" type="text/x-handlebars-template">
             <div class="item">
                 <div class="cover">
                     <img src="{{cover}}" alt="cover">
                 </div>
-                <h2>{{title}}</h2>
-                <h4>titolo originale: {{originalTitle}}</h4>
-                <div class="orig-lang">
-                    <h4>lingua originale:</h4>
-                    <img src="{{iconFlag}}" alt="language icon">
-                </div>
-                <h4>popolarità: {{popularity}}</h4>
-                <div class="stars">
-                    <h4>voto medio:</h4>
-                    {{{stars}}}
-                </div>
-            </div>
-        </script>
-        <!-- ************************ -->
-        <script id="error" type="text/x-handlebars-template">
-            <div class="title">
-                <h2>{{str}}</h2>
-            </div>
-        </script>
-        <!-- ************************ -->
-        <script id="slider_img" type="text/x-handlebars-template">
-            <div class="slide__">
-                <div class="image">
-                    <img src="http://image.tmdb.org/t/p/original{{backdropPath}}" alt="{{originalTitle}}">
-                </div>
-                <div class="title">
-                    <h2>{{originalTitle}}</h2>
+                <div class="info">
+                    <div class="title">
+                        <h2>{{title}}</h2>
+                    </div>
+                    <div class="original-title">
+                        <h4>{{originalTitle}}</h4>
+                    </div>
+                    <div class="synopsis">
+                        <p>{{synopsis}}</p>
+                    </div>
+                    <div class="language">
+                        <img src="{{iconFlag}}" alt="">
+                    </div>
+                    <div class="rating">
+                        {{{stars}}}
+                    </div>
                 </div>
             </div>
         </script>
