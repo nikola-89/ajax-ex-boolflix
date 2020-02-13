@@ -1,54 +1,78 @@
 $(document).ready(function() {
     // ***************************
-    printerResult = Handlebars.compile($('#result').html());
-    printerNoResult = Handlebars.compile($('#error').html());
+    // Endpoint
     // ***************************
-    focusInput();
+    var apiSlider = 'https://api.themoviedb.org/3/movie/now_playing';
+    var apiGetQuery = 'https://api.themoviedb.org/3/search/';
+    var myApiKey = 'af0ae7e4040a70eef7c834e5f942b6b8';
     // ***************************
-    $(document).on('click', '.search button', function() {
-        if ($('.search input').val().trim().length != 0) {
-            reqMovie($('.search input').val());
-            reqTv($('.search input').val());
-            cleanResult();
-            focusInput();
-        } else {
-            focusInput();
-        }
-    });
+    // Handlebars
     // ***************************
-    $(document).on('keypress', $('.search input').is(':focus'), function(e) {
+    var printerResult = Handlebars.compile($('#result').html());
+    var printerSlider = Handlebars.compile($('#slider_img').html());
+    var printerNoResult = Handlebars.compile($('#error').html());
+    var printerError = Handlebars.compile($('#result').html());
+    // ***************************
+    // var
+    // ***************************
+    var query = $('#search input');
+    // ***************************
+    // apiRequests(apiSlider, myApiKey, printerSlider, 0, 'slider');
+    focusInput(query);
+    // ***************************
+    $(document).on('keypress', query.is(':focus'), function(e) {
             if (e.which == 13) {
-                if ($('.search input').val().trim().length != 0) {
-                    reqMovie($('.search input').val());
-                    reqTv($('.search input').val());
-                    cleanResult();
-                    focusInput();
+                if (query.val().trim().length != 0) {
+                    reqMovie(query.val());
+                    reqTv(query.val());
+                    cleanResult(query);
+                    focusInput(query);
                 } else {
-                    focusInput();
+                    focusInput(query);
                 }
             }
         }
     );
+    $(document).on("mouseenter mouseleave", ".nav", function(e) {
+        // ***************************
+        if (e.type == "mouseenter") {
+            $('.nav .logo h3:nth-child(2)').removeClass('hidden');
+            $('.nav .logo h3:nth-child(3)').removeClass('hidden');
+        } else {
+            $('.nav .logo h3:nth-child(2)').addClass('hidden');
+            $('.nav .logo h3:nth-child(3)').addClass('hidden');
+        }
+    });
+    $(document).on("mouseenter mouseleave", ".row .item", function(e) {
+        // ***************************
+        if (e.type == "mouseenter") {
+            $('.row .type').css({
+                'transform': 'translate(9px, -50px)',
+                'transition': '250ms all'
+            });
+            $(this).find('.info').fadeIn(400);
+        } else {
+            $('.row .type').css({
+                'transform': '',
+                'transition': '250ms all'
+            });
+            $(this).find('.info').fadeOut(300);;
+        }
+    });
 });
 // ***************************
 // *-------*function*--------*
 // ***************************
-function reqMovie(value) {
+function apiRequests(url, apiKey, handlebars, value, type) {
+    // ***************************
     $.ajax(
         {
-            url: "https://api.themoviedb.org/3/search/movie",
+            url: typeUrl(url, type),
             method: "GET",
-            data: {
-                api_key : 'af0ae7e4040a70eef7c834e5f942b6b8',
-                query : value,
-                language : 'it-IT',
-                include_adult : false,
-                page : 1
-            },
+            data: typeCall(apiKey, value, type),
             success: function (data, status) {
                 if (status == 'success') {
-                    console.log(data);
-                    print(data.results, 'movie');
+                    print(data.results, handlebars, type);
                 } else {
                     error();
                 }
@@ -60,43 +84,21 @@ function reqMovie(value) {
     );
 }
 // ***************************
-function reqTv(value) {
-    $.ajax(
-        {
-            url: "https://api.themoviedb.org/3/search/tv",
-            method: "GET",
-            data: {
-                api_key : 'af0ae7e4040a70eef7c834e5f942b6b8',
-                query : value,
-                language : 'it-IT',
-                include_adult : false,
-                page : 1
-            },
-            success: function (data, status) {
-                if (status == 'success') {
-                    console.log(data);
-                    print(data.results, 'tv');
-                } else {
-                    error();
-                }
-            },
-            error: function (data, status) {
-                error();
-            }
-        }
-    );
-}
-// ***************************
-function print(data) {
+function print(data, handlebars, type) {
     if (data.length != 0) {
-        for (var i = 0; i < data.length; i++) {
-            $('.result').append(printerResult(cfgResult(data[i])));
+        if (type == 'slider') {
+            for (var i = 0; i < data.length; i++) {
+                $('.slider').append(handlebars(cfgResult(data[i])));
+            }
+        } else {
+            for (var i = 0; i < data.length; i++) {
+                $('.result').append(handlebars(cfgResult(data[i])));
+            }
         }
     } else {
-        var cfgNoResult = {
+        $('.result').append(handlebars({
             str : 'La ricerca non ha prodotto risultati.'
-        }
-        $('.result').append(printerNoResult(cfgNoResult));
+        }));
     }
 }
 // ***************************
@@ -129,89 +131,131 @@ function sortFloatNumb(obj, objKeyString) {
     });
 }
 // ***************************
-function cleanResult() {
+function cleanResult(input) {
     $('.result .title').remove();
-    $('.search input').val('');
+    input.val('');
 }
 // ***************************
-function focusInput() {
-    $('.search input').focus();
+function focusInput(input) {
+    input.focus();
 }
 // ***************************
 function stars(number) {
+    // ***************************
     var result = [];
     var num = Math.round(number / 2);
-    var full =
-        '<span><i class="fas fa-star" style="color:#F9AE0E"></i></span>';
-    var empty =
-        '<span><i class="far fa-star" style="color:#F9AE0E"></i></span>';
     while (result.length <= 4) {
         if (result.length < num) {
-            result.push(full);
+            // full star
+            result.push('<span><i class="fas fa-star" style="color:#F9AE0E"></i></span>');
         } else {
-            result.push(empty);
+            // empty star
+            result.push('<span><i class="far fa-star" style="color:#F9AE0E"></i></span>');
         }
     }
     return result.join('');
 }
 // ***************************
 function flags(str) {
-    var flagUnd = 'https://i.imgur.com/1JDXdUN.png';
+    // ***************************
     var flagsIcon = {
-        'en': 'https://i.imgur.com/GZt9HJg.png',
-        'fr': 'https://i.imgur.com/DN4BNIF.png',
-        'de': 'https://i.imgur.com/UOTuePK.png',
-        'it': 'https://i.imgur.com/cErhoOe.png',
-        'es': 'https://i.imgur.com/6tybsuv.png',
-        'nl': 'https://i.imgur.com/ohiZCWn.png',
-        'fi': 'https://i.imgur.com/qPW6byZ.png',
-        'cs': 'https://i.imgur.com/wDGjO4J.png',
-        'ja': 'https://i.imgur.com/oN6voqV.png',
-        'pt': 'https://i.imgur.com/BNK4P8C.png',
-        'pl': 'https://i.imgur.com/KQhtyoS.png',
-        'tr': 'https://i.imgur.com/YU2f1oi.png',
-        'zh': 'https://i.imgur.com/1IslcLy.png',
-        'ar': 'https://i.imgur.com/kwlErfp.png',
-        'ko': 'https://i.imgur.com/T5I6fRo.png',
-        'he': 'https://i.imgur.com/MXKjzsa.png',
-        'nb': 'https://i.imgur.com/QnbadVG.png',
-        'ru': 'https://i.imgur.com/DBGM3ov.png',
-        'hu': 'https://i.imgur.com/y1rLdRi.png'
+        en : 'https://i.imgur.com/GZt9HJg.png',
+        fr : 'https://i.imgur.com/DN4BNIF.png',
+        de : 'https://i.imgur.com/UOTuePK.png',
+        it : 'https://i.imgur.com/cErhoOe.png',
+        es : 'https://i.imgur.com/6tybsuv.png',
+        nl : 'https://i.imgur.com/ohiZCWn.png',
+        fi : 'https://i.imgur.com/qPW6byZ.png',
+        cs : 'https://i.imgur.com/wDGjO4J.png',
+        ja : 'https://i.imgur.com/oN6voqV.png',
+        pt : 'https://i.imgur.com/BNK4P8C.png',
+        pl : 'https://i.imgur.com/KQhtyoS.png',
+        tr : 'https://i.imgur.com/YU2f1oi.png',
+        zh : 'https://i.imgur.com/1IslcLy.png',
+        ar : 'https://i.imgur.com/kwlErfp.png',
+        ko : 'https://i.imgur.com/T5I6fRo.png',
+        he : 'https://i.imgur.com/MXKjzsa.png',
+        nb : 'https://i.imgur.com/QnbadVG.png',
+        ru : 'https://i.imgur.com/DBGM3ov.png',
+        hu : 'https://i.imgur.com/y1rLdRi.png',
+        sv : 'https://i.imgur.com/OXMAOxr.png'
     }
     for (var key in flagsIcon) {
         if (key === str) {
             return flagsIcon[key];
         }
     }
-    return flagUnd;
+    return str;
 }
-// ******************************************************
+// *******************************
 function cfgResult(data, type) {
-    var fullImg = 'https://image.tmdb.org/t/p/w185' + data.poster_path;
+    // ***************************
+    var cover = 'https://image.tmdb.org/t/p/w185' + data.poster_path;
     if (data.poster_path == null) {
-        // fullImg = 'https://i.imgur.com/WoA9AF9.png';
-        fullImg = 'https://i.imgur.com/n8DkWVY.png';
+        cover = 'https://i.imgur.com/n8DkWVY.png';
     }
     if (type == 'tv') {
         // Config SerieTV
         var cfgResult = {
-            cover : fullImg,
+            cover : cover,
             title : data.name,
             originalTitle : data.original_name,
             iconFlag : flags(data.original_language),
             popularity : data.popularity,
             stars : stars(data.vote_average)
         }
-    } else {
+    } else if (type == 'movie') {
         // Config Film
         var cfgResult = {
-            cover : fullImg,
+            cover : cover,
             title : data.title,
             originalTitle : data.original_title,
             iconFlag : flags(data.original_language),
             popularity : data.popularity,
             stars : stars(data.vote_average)
         }
+    } else {
+        // Config Slider
+        var cfgResult = {
+            backdropPath : data.backdrop_path,
+            originalTitle : data.original_title,
+        }
     }
     return cfgResult;
+}
+// ***************************
+function typeUrl(url, type) {
+    // ***************************
+    switch (type) {
+        case 'slider':
+            return url;
+        case 'movie':
+            return url + type;
+        case 'tv':
+            return url + type;
+    }
+}
+// ***************************
+function typeCall(key, query, type) {
+    // ***************************
+    var params;
+    if (type == 'slider') {
+        query = null;
+        params = {
+            api_key : key,
+            language : 'it-IT',
+            region : 'IT',
+            page : 1
+        }
+    } else {
+        params = {
+            api_key : key,
+            query : query,
+            language : 'it-IT',
+            include_adult : false,
+            page : 1
+        }
+    }
+    return params;
+    // ***************************
 }
