@@ -72,11 +72,11 @@ function apiRequests(url, apiKey, value, type) {
                     console.log(data.results);
                     print(data.results, type);
                 } else {
-                    error();
+                    print(null, '503');
                 }
             },
             error: function (data, status) {
-                error();
+                print(null, '503');
             }
         }
     );
@@ -86,17 +86,26 @@ function print(data, type) {
     var printType = Handlebars.compile($('#type').html());
     var printItem = Handlebars.compile($('#item').html());
     var printError = Handlebars.compile($('#error').html());
-    if (data.length != 0) {
-        if (type == 'start') {
-            $('.wrapper').append(printType({type : 'ora al cinema'}));
-        } else {
-            $('.wrapper').append(printType({type : type}));
-        }
-        for (var i = 0; i < data.length; i++) {
-            $('.wrapper .row').append(printItem(cfgResult(data[i], type)));
-        }
+// ***************************
+    if (data == null && type == '503') {
+        $('.wrapper').append(printError({str : 'Connessione al server non riuscita.'}));
     } else {
-        $('.wrapper').append(printError({str : 'La ricerca ' + type + ' non ha prodotto risultati.'}));
+        if (data.length != 0) {
+            if (type == 'start') {
+                $('.wrapper').append(printType({type : 'ora al cinema'}));
+            } else {
+                $('.wrapper').append(printType({type : type}));
+            }
+            for (var i = 0; i < data.length; i++) {
+                $('.wrapper .row').append(printItem(cfgResult(data[i], type)));
+            }
+        } else {
+            if (type == 'movie') {
+                $('.wrapper').append(printError({str : 'Nessun film trovato.'}));
+            } else if (type == 'tv') {
+                $('.wrapper').append(printError({str : 'Nessuna serie tv trovata.'}));
+            }
+        }
     }
 }
 // ***************************
@@ -164,11 +173,15 @@ function cfgResult(data, type) {
     if (data.poster_path == null) {
         cover = 'https://i.imgur.com/PGliIqs.png';
     }
+    var synopsis = data.overview
+    if (data.overview == "") {
+        synopsis = 'Descrizione non disponibile.'
+    }
     if (type == 'tv') {
         var cfgResult = {
             cover : cover,
             title : data.name,
-            synopsis : data.overview,
+            synopsis : synopsis,
             originalTitle : data.original_name,
             iconFlag : flags(data.original_language),
             stars : stars(data.vote_average)
@@ -177,7 +190,7 @@ function cfgResult(data, type) {
         var cfgResult = {
             cover : cover,
             title : data.title,
-            synopsis : data.overview,
+            synopsis : synopsis,
             originalTitle : data.original_title,
             iconFlag : flags(data.original_language),
             stars : stars(data.vote_average)
